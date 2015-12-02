@@ -1,29 +1,26 @@
-package io.oalhait.pictocal.pictocal;
+package io.oalhait.pictocal;
 
 import android.content.Context;
 import android.hardware.Camera;
 import android.util.Log;
-import com.shamanland.fab.FloatingActionButton;
+
+import android.view.Display;
+import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 
-import android.app.Activity;
-import android.hardware.Camera.AutoFocusCallback;
-import android.hardware.Camera.PictureCallback;
-import android.net.Uri;
-import android.provider.MediaStore;
+import android.view.WindowManager;
 
 
 public class CameraView extends SurfaceView implements SurfaceHolder.Callback{
     private SurfaceHolder mHolder;
     private Camera mCamera;
+    private Context mContext;
 
     public CameraView(Context context, Camera camera){
         super(context);
+        this.mContext = context;
         Camera.Parameters params = camera.getParameters();
         params.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
         camera.setParameters(params);
@@ -34,6 +31,9 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback{
         mHolder.addCallback(this);
         mHolder.setType(SurfaceHolder.SURFACE_TYPE_NORMAL);
     }
+
+
+
 
     @Override
     public void surfaceCreated(SurfaceHolder surfaceHolder) {
@@ -48,7 +48,7 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback{
     }
 
     @Override
-    public void surfaceChanged(SurfaceHolder surfaceHolder, int i, int i2, int i3) {
+    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
 
         //before changing the application orientation, you need to stop the preview, rotate and then start it again
         if(mHolder.getSurface() == null)//check if the surface is ready to receive camera data
@@ -62,6 +62,32 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback{
 
         //now, recreate the camera preview
         try{
+            Camera.Parameters params = mCamera.getParameters();
+            Display display =
+                    ((WindowManager)mContext.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+            if(display.getRotation() == Surface.ROTATION_0)
+            {
+                params.setPreviewSize(height, width);
+                mCamera.setDisplayOrientation(90);
+            }
+
+            if(display.getRotation() == Surface.ROTATION_90)
+            {
+                params.setPreviewSize(width, height);
+                mCamera.setDisplayOrientation(0);
+
+            }
+//            don't really care about upside down
+            if(display.getRotation() == Surface.ROTATION_180)
+            {
+                params.setPreviewSize(height, width);
+            }
+
+            if(display.getRotation() == Surface.ROTATION_270)
+            {
+                params.setPreviewSize(width, height);
+                mCamera.setDisplayOrientation(180);
+            }
             mCamera.setPreviewDisplay(mHolder);
             mCamera.startPreview();
             tryAutoFocus();
@@ -84,4 +110,7 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback{
         mCamera.stopPreview();
         mCamera.release();
     }
+
+
+
 }

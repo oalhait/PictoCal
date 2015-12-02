@@ -1,4 +1,4 @@
-package io.oalhait.pictocal.pictocal;
+package io.oalhait.pictocal;
 
 import org.junit.Test;
 
