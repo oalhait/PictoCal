@@ -4,4 +4,6 @@
     <string name="action_settings">Settings</string>
     <string name="title_activity_tags_view">TagsView</string>
     <string name="btnUploadToServer">Use</string>
+    <string name="upload">Upload</string>
+    <string name="title_activity_ocr">OCR</string>
 </resources>

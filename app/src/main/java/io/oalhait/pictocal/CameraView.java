@@ -39,11 +39,12 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback{
     public void surfaceCreated(SurfaceHolder surfaceHolder) {
         try{
             //when the surface is created, we can set the camera to draw images in this surfaceholder
-            mCamera.setPreviewDisplay(surfaceHolder);
-            mCamera.startPreview();
+                mCamera.setPreviewDisplay(surfaceHolder);
+                mCamera.startPreview();
             tryAutoFocus();
         } catch (IOException e) {
             Log.d("ERROR", "Camera error on surfaceCreated " + e.getMessage());
+
         }
     }
 
