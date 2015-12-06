@@ -26,7 +26,7 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback{
         camera.setParameters(params);
         mCamera = camera;
         mCamera.setDisplayOrientation(90);
-        //get the holder and set this class as the callback, so we can get camera data here
+        //get the holder and set this class as the callback, so we can get activity_main data here
         mHolder = getHolder();
         mHolder.addCallback(this);
         mHolder.setType(SurfaceHolder.SURFACE_TYPE_NORMAL);
@@ -38,7 +38,7 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback{
     @Override
     public void surfaceCreated(SurfaceHolder surfaceHolder) {
         try{
-            //when the surface is created, we can set the camera to draw images in this surfaceholder
+            //when the surface is created, we can set the activity_main to draw images in this surfaceholder
                 mCamera.setPreviewDisplay(surfaceHolder);
                 mCamera.startPreview();
             tryAutoFocus();
@@ -52,16 +52,16 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback{
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
 
         //before changing the application orientation, you need to stop the preview, rotate and then start it again
-        if(mHolder.getSurface() == null)//check if the surface is ready to receive camera data
+        if(mHolder.getSurface() == null)//check if the surface is ready to receive activity_main data
             return;
 
         try{
             mCamera.stopPreview();
         } catch (Exception e){
-            //this will happen when you are trying the camera if it's not running
+            //this will happen when you are trying the activity_main if it's not running
         }
 
-        //now, recreate the camera preview
+        //now, recreate the activity_main preview
         try{
             Camera.Parameters params = mCamera.getParameters();
             Display display =
@@ -92,6 +92,8 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback{
             mCamera.setPreviewDisplay(mHolder);
             mCamera.startPreview();
             tryAutoFocus();
+
+
         } catch (IOException e) {
             Log.d("ERROR", "Camera error on surfaceChanged " + e.getMessage());
         }
@@ -106,7 +108,7 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback{
 
     @Override
     public void surfaceDestroyed(SurfaceHolder surfaceHolder) {
-        //our app has only one screen, so we'll destroy the camera in the surface
+        //our app has only one screen, so we'll destroy the activity_main in the surface
         //if you are unsing with more screens, please move this code your activity
         mCamera.stopPreview();
         mCamera.release();

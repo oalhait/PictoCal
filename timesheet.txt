@@ -1,0 +1,36 @@
+Timesheet
+Tuesday 11/24: Started making the UI, getting used to Android, watching the lectures from the course I bought (Udemy) 
+5 hours
+
+Wednesday 11/25: 
+Started making my custom CameraView and implementing it into the main screen, also made buttons
+8 hours
+
+Thursday 11/26:
+CameraView complete, moving on to optimizing my code and setting up server
+12 hours
+
+Friday 11/27:
+Worked on server side of things, setting up PHP, database to accept photo, downloaded all the right packages
+5 hours
+
+Saturday 11/28:
+Took a break from TP
+0 hours
+
+Sunday 11/29:
+Started making uploading screen and making transitions from the Main activity to the uploading screen and back. This involved watching a bunch of lectures about how activities worked with each other. Also started making the uploading to server function.
+7 hours
+
+Monday 11/30:
+Didn’t do much TP work, but cleared up unnecessary stuff and tidied everything up. This included setting up different activities instead of keeping lots of stuff in a few activities.
+1 hour
+
+Tuesday 12/1:
+Got uploading function working without any user-friendly screen (yet). 
+4 hours
+
+Wednesday 12/2:
+Almost finished with making the UI incorporation to support the uploading function.
+3 hours
+
