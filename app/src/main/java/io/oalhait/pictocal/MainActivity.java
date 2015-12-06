@@ -37,7 +37,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private static final int CAMERA_CAPTURE_IMAGE_REQUEST_CODE = 100;
     public File pictureFileUri;
     private ImageView imgPreview;
-    Button upload, cancel;
     private File trainedData;
     ViewFlipper viewFlipper;
     Bitmap IMAGE_IN_USE;
@@ -50,31 +49,34 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
         trainedData = new File(Environment.getExternalStorageDirectory() + "/Pictocal/tessdata/eng.traineddata");
         if (!trainedData.exists()) {
-//            DownloadFile x = new DownloadFile();
+            Intent x = new Intent(this,DownloadFile.class);
+            startActivity(x);
         }
+        //shouldn't be an else here, should put something else to include the code otehrwise
+        else {
 
-        setContentView(R.layout.activity_main);
-        viewFlipper = (ViewFlipper) findViewById(R.id.flipper);
-        imgPreview = (ImageView) findViewById(R.id.imgPreview);
-        imgPreview.setVisibility(View.VISIBLE);
+            setContentView(R.layout.activity_main);
+            viewFlipper = (ViewFlipper) findViewById(R.id.flipper);
+            imgPreview = (ImageView) findViewById(R.id.imgPreview);
+            imgPreview.setVisibility(View.VISIBLE);
 
 
+            try {
+                mCamera = Camera.open();//you can use open(int) to use different cameras
+            } catch (Exception e) {
+                Log.d("ERROR", "Failed to get activity_main: " + e.getMessage());
+            }
 
-        try{
-            mCamera = Camera.open();//you can use open(int) to use different cameras
-        } catch (Exception e){
-            Log.d("ERROR", "Failed to get activity_main: " + e.getMessage());
+            if (mCamera != null) {
+                mCameraView = new CameraView(this, mCamera);//create a SurfaceView to show activity_main data
+                FrameLayout camera_view = (FrameLayout) findViewById(R.id.camera_view);
+                camera_view.addView(mCameraView);//add the SurfaceView to the layout
+
+
+            }
+            ImageButton shutter = (ImageButton) findViewById(R.id.fab);
+            shutter.setOnClickListener(this);
         }
-
-        if(mCamera != null) {
-            mCameraView = new CameraView(this, mCamera);//create a SurfaceView to show activity_main data
-            FrameLayout camera_view = (FrameLayout)findViewById(R.id.camera_view);
-            camera_view.addView(mCameraView);//add the SurfaceView to the layout
-
-
-        }
-        ImageButton shutter = (ImageButton)findViewById(R.id.fab);
-        shutter.setOnClickListener(this);
 
     }
     public void onClick(View v) {

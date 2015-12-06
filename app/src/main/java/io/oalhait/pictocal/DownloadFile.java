@@ -3,7 +3,9 @@ package io.oalhait.pictocal;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.DownloadManager;
 import android.app.ProgressDialog;
+import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
@@ -23,13 +25,13 @@ public class DownloadFile extends Activity {
     public static final int progress_bar_type = 0;
 
     // File url to download
-    private static String file_url = "https://github.com/tesseract-ocr/tessdata/blob/master/eng.traineddata";
+    private static String file_url = "http://www.w3.org/2011/web-apps-ws/papers/Nitobi.pdf";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_main);
+//        setContentView(R.layout.activity_main);
 
         new DownloadFileFromURL().execute(file_url);
 
@@ -67,6 +69,7 @@ public class DownloadFile extends Activity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+//            pDialog.show();
             showDialog(progress_bar_type);
         }
 
@@ -78,12 +81,12 @@ public class DownloadFile extends Activity {
             int count;
             try {
                 URL url = new URL(f_url[0]);
-                URLConnection conection = url.openConnection();
-                conection.connect();
+                URLConnection connection = url.openConnection();
+                connection.connect();
 
                 // this will be useful so that you can show a tipical 0-100%
                 // progress bar
-                int lenghtOfFile = conection.getContentLength();
+                int lengthOfFile = connection.getContentLength();
 
                 // download the file
                 InputStream input = new BufferedInputStream(url.openStream(),
@@ -91,7 +94,7 @@ public class DownloadFile extends Activity {
 
                 // Output stream
                 OutputStream output = new FileOutputStream(Environment
-                        .getExternalStorageDirectory().toString() + "/Pictocal/tessdata/eng.traineddata");
+                        .getExternalStorageDirectory() + "/Pictocal/tessdata/eng.traineddata");
 
                 byte data[] = new byte[1024];
 
@@ -101,7 +104,8 @@ public class DownloadFile extends Activity {
                     total += count;
                     // publishing the progress....
                     // After this onProgressUpdate will be called
-                    publishProgress("" + (int) ((total * 100) / lenghtOfFile));
+                    Log.d("PictoCal","Progress made");
+                    publishProgress("" + (int) ((total * 100) / lengthOfFile));
 
                     // writing data to file
                     output.write(data, 0, count);
