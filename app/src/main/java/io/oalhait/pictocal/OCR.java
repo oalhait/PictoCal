@@ -1,39 +1,38 @@
 package io.oalhait.pictocal;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+//a lot of this file is thanks to Gautam Gupta
 
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
-import android.media.ExifInterface;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.provider.MediaStore;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+
 import com.googlecode.tesseract.android.TessBaseAPI;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 public class OCR extends Activity {
-    public static final String PACKAGE_NAME = "com.datumdroid.android.ocr.simple";
-    public static final String DATA_PATH = Environment
-            .getExternalStorageDirectory().toString() + "/SimpleAndroidOCR/";
+    private static final String TAG = "TESSERACT";
+
+
+
+
+    public String DATA_PATH = Environment.getExternalStorageDirectory().toString() + "/PictoCal/";
 
     // You should have the trained data file in assets folder
     // You can get them at:
     // http://code.google.com/p/tesseract-ocr/downloads/list
     public static final String lang = "eng";
 
-    private static final String TAG = "SimpleAndroidOCR.java";
 
     protected Button _button;
     // protected ImageView _image;
@@ -61,16 +60,10 @@ public class OCR extends Activity {
 
         }
 
-        // lang.traineddata file with the app (in assets folder)
-        // You can get them at:
-        // http://code.google.com/p/tesseract-ocr/downloads/list
-        // This area needs work and optimization
         if (!(new File(DATA_PATH + "tessdata/" + lang + ".traineddata")).exists()) {
             try {
-
                 AssetManager assetManager = getAssets();
                 InputStream in = assetManager.open("tessdata/" + lang + ".traineddata");
-                //GZIPInputStream gin = new GZIPInputStream(in);
                 OutputStream out = new FileOutputStream(DATA_PATH
                         + "tessdata/" + lang + ".traineddata");
 
@@ -82,7 +75,6 @@ public class OCR extends Activity {
                     out.write(buf, 0, len);
                 }
                 in.close();
-                //gin.close();
                 out.close();
 
                 Log.v(TAG, "Copied " + lang + " traineddata");
@@ -93,35 +85,22 @@ public class OCR extends Activity {
 
         super.onCreate(savedInstanceState);
 
-//        setContentView(R.layout.main);
+        Intent i = getIntent();
+        Bundle extra = i.getExtras();
+        File pictureFile = (File)extra.get("filePath");
 
-        // _image = (ImageView) findViewById(R.id.image);
-//        _field = (EditText) findViewById(R.id.field);
-//        _button = (Button) findViewById(R.id.button);
-        _button.setOnClickListener(new ButtonClickHandler());
 
-        _path = DATA_PATH + "/ocr.jpg";
+        setContentView(R.layout.ocr);
+        _field = (EditText) findViewById(R.id.field);
+
+
+        _path = pictureFile.toString();
+        onPhotoTaken();
     }
 
-    public class ButtonClickHandler implements View.OnClickListener {
-        public void onClick(View view) {
-            Log.v(TAG, "Starting Camera app");
-            startCameraActivity();
-        }
-    }
 
-    // Simple android photo capture:
-    // http://labs.makemachine.net/2010/03/simple-android-photo-capture/
 
-    protected void startCameraActivity() {
-        File file = new File(_path);
-        Uri outputFileUri = Uri.fromFile(file);
 
-        final Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
-
-        startActivityForResult(intent, 0);
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -155,51 +134,9 @@ public class OCR extends Activity {
         options.inSampleSize = 4;
 
         Bitmap bitmap = BitmapFactory.decodeFile(_path, options);
+//        bitmap = SetGrayscale(bitmap);
+//        bitmap = RemoveNoise(bitmap);
 
-        try {
-            ExifInterface exif = new ExifInterface(_path);
-            int exifOrientation = exif.getAttributeInt(
-                    ExifInterface.TAG_ORIENTATION,
-                    ExifInterface.ORIENTATION_NORMAL);
-
-            Log.v(TAG, "Orient: " + exifOrientation);
-
-            int rotate = 0;
-
-            switch (exifOrientation) {
-                case ExifInterface.ORIENTATION_ROTATE_90:
-                    rotate = 90;
-                    break;
-                case ExifInterface.ORIENTATION_ROTATE_180:
-                    rotate = 180;
-                    break;
-                case ExifInterface.ORIENTATION_ROTATE_270:
-                    rotate = 270;
-                    break;
-            }
-
-            Log.v(TAG, "Rotation: " + rotate);
-
-            if (rotate != 0) {
-
-                // Getting width & height of the given image.
-                int w = bitmap.getWidth();
-                int h = bitmap.getHeight();
-
-                // Setting pre rotate
-                Matrix mtx = new Matrix();
-                mtx.preRotate(rotate);
-
-                // Rotating Bitmap
-                bitmap = Bitmap.createBitmap(bitmap, 0, 0, w, h, mtx, false);
-            }
-
-            // Convert to ARGB_8888, required by tess
-            bitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
-
-        } catch (IOException e) {
-            Log.e(TAG, "Couldn't correct orientation: " + e.toString());
-        }
 
         // _image.setImageBitmap( bitmap );
 
@@ -214,7 +151,7 @@ public class OCR extends Activity {
 
         baseApi.end();
 
-        // You now have the text in recognizedText var, you can do anything with it.
+        // You now have the text in recognizedText int, you can do anything with it.
         // We will display a stripped out trimmed alpha-numeric version of it (if lang is eng)
         // so that garbage doesn't make it to the display.
 
@@ -229,11 +166,17 @@ public class OCR extends Activity {
         if ( recognizedText.length() != 0 ) {
             _field.setText(_field.getText().toString().length() == 0 ? recognizedText : _field.getText() + " " + recognizedText);
             _field.setSelection(_field.getText().toString().length());
+            Log.d("TESSERACT",recognizedText);
         }
 
         // Cycle done.
+//        Intent calendar = new Intent(this,CalendarActivity.cla)
     }
 
-    // www.Gaut.am was here
-    // Thanks for reading!
+    @Override
+    public void onBackPressed() {
+        Intent i = new Intent(this,CalendarActivity.class);
+        startActivity(i);
+        return;
+    }
 }

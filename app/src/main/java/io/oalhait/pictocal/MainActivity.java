@@ -12,12 +12,10 @@ import android.os.Environment;
 import android.util.Log;
 import android.view.Surface;
 import android.view.View;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ViewFlipper;
-import com.googlecode.tesseract.android.TessBaseAPI;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -35,48 +33,42 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private Camera mCamera = null;
     private CameraView mCameraView = null;
     private static final int CAMERA_CAPTURE_IMAGE_REQUEST_CODE = 100;
-    public File pictureFileUri;
+    public File pictureFile;
     private ImageView imgPreview;
     private File trainedData;
     ViewFlipper viewFlipper;
     Bitmap IMAGE_IN_USE;
-    public static final String DATA_PATH =
-            Environment.getExternalStorageDirectory() + "/PictoCal";
+    public static final String DATA_PATH = Environment.getExternalStorageDirectory() + "/PictoCal";
+    public FileOutputStream fos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        trainedData = new File(Environment.getExternalStorageDirectory() + "/Pictocal/tessdata/eng.traineddata");
-        if (!trainedData.exists()) {
-            Intent x = new Intent(this,DownloadFile.class);
-            startActivity(x);
+        setContentView(R.layout.activity_main);
+        viewFlipper = (ViewFlipper) findViewById(R.id.flipper);
+        imgPreview = (ImageView) findViewById(R.id.imgPreview);
+        imgPreview.setVisibility(View.VISIBLE);
+
+
+        try {
+            mCamera = Camera.open();
+        } catch (Exception e) {
+            Log.d("ERROR", "Failed to get activity_main: " + e.getMessage());
         }
-        //shouldn't be an else here, should put something else to include the code otehrwise
-        else {
 
-            setContentView(R.layout.activity_main);
-            viewFlipper = (ViewFlipper) findViewById(R.id.flipper);
-            imgPreview = (ImageView) findViewById(R.id.imgPreview);
-            imgPreview.setVisibility(View.VISIBLE);
-
-
-            try {
-                mCamera = Camera.open();//you can use open(int) to use different cameras
-            } catch (Exception e) {
-                Log.d("ERROR", "Failed to get activity_main: " + e.getMessage());
-            }
-
-            if (mCamera != null) {
-                mCameraView = new CameraView(this, mCamera);//create a SurfaceView to show activity_main data
-                FrameLayout camera_view = (FrameLayout) findViewById(R.id.camera_view);
-                camera_view.addView(mCameraView);//add the SurfaceView to the layout
+        if (mCamera != null) {
+            //create a SurfaceView to show activity_main data
+            mCameraView = new CameraView(this, mCamera);
+            FrameLayout camera_view = (FrameLayout) findViewById(R.id.camera_view);
+            //add the SurfaceView to the layout
+            camera_view.addView(mCameraView);
 
 
-            }
-            ImageButton shutter = (ImageButton) findViewById(R.id.fab);
-            shutter.setOnClickListener(this);
         }
+        ImageButton shutter = (ImageButton) findViewById(R.id.fab);
+        shutter.setOnClickListener(this);
+
 
     }
     public void onClick(View v) {
@@ -87,24 +79,15 @@ public class MainActivity extends Activity implements View.OnClickListener {
             case R.id.btnUpload:
             {
                 try {
-                    FileOutputStream fos = new FileOutputStream(pictureFileUri);
-                    IMAGE_IN_USE.compress(Bitmap.CompressFormat.PNG, 50, fos);
+
+                    IMAGE_IN_USE.compress(Bitmap.CompressFormat.JPEG, 100, fos);
                     fos.flush();
                     fos.close();
-                    TessBaseAPI baseApi = new TessBaseAPI();
-                    galleryAddPic(pictureFileUri);
-//                    following 4 lines are to implement tesseract OCR library
-//                     DATA_PATH = Path to the storage
-//                     lang = for which the language data exists, usually "eng"
-                    baseApi.init(DATA_PATH, "eng");
-//                     Eg. baseApi.init("/mnt/sdcard/tesseract/tessdata/eng.traineddata", "eng");
-                    baseApi.setImage(IMAGE_IN_USE);
-                    String recognizedText = baseApi.getUTF8Text();
-                    baseApi.end();
-                    Log.d("PICTOCAL",recognizedText);
-
+                    Intent in = new Intent(this, OCR.class);
+                    in.putExtra("filePath", pictureFile);
+                    startActivity(in);
                 } catch (IOException e) {
-                    Log.d("PictoCal","Image not Found");
+                    Log.d("Pictocal","bitmap failed to be written");
                 }
                 break;
             }
@@ -130,13 +113,16 @@ public class MainActivity extends Activity implements View.OnClickListener {
         @Override
         public void onPictureTaken(byte[] data, Camera camera) {
 
-            pictureFileUri = getOutputMediaFile();
+            pictureFile = getOutputMediaFile();
             int angleToRotate =
                     getRotationAngle(MainActivity.this, Camera.CameraInfo.CAMERA_FACING_BACK);
             Bitmap originalImage = BitmapFactory.decodeByteArray(data, 0, data.length);
             IMAGE_IN_USE = rotate(originalImage, angleToRotate);
             originalImage.recycle();
 
+            try {
+                fos  = new FileOutputStream(pictureFile);
+            } catch(IOException e) {}
 
             imgPreview.setImageDrawable(null);
             imgPreview.setImageBitmap(IMAGE_IN_USE);
@@ -256,6 +242,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
         }
 
     }
+
+
 
 }
 
