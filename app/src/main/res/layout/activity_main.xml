@@ -130,10 +130,4 @@
         </RelativeLayout>
     </ViewFlipper>
 
-    <RadioButton
-        android:layout_width="wrap_content"
-        android:layout_height="65dp"
-        android:text="New RadioButton"
-        android:id="@+id/radioButton"
-        android:layout_gravity="right" />
 </LinearLayout>

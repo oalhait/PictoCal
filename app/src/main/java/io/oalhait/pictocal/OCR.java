@@ -1,7 +1,5 @@
 package io.oalhait.pictocal;
 
-//a lot of this file is thanks to Gautam Gupta
-
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.AssetManager;
@@ -11,6 +9,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 
 import com.googlecode.tesseract.android.TessBaseAPI;
@@ -19,6 +18,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Date;
+import java.util.List;
+
+import com.joestelmach.natty.*;
+
 
 public class OCR extends Activity {
     private static final String TAG = "TESSERACT";
@@ -28,18 +32,14 @@ public class OCR extends Activity {
 
     public String DATA_PATH = Environment.getExternalStorageDirectory().toString() + "/PictoCal/";
 
-    // You should have the trained data file in assets folder
-    // You can get them at:
-    // http://code.google.com/p/tesseract-ocr/downloads/list
+
     public static final String lang = "eng";
 
 
     protected Button _button;
-    // protected ImageView _image;
     protected EditText _field;
     protected String _path;
     protected boolean _taken;
-
     protected static final String PHOTO_TAKEN = "photo_taken";
 
     @Override
@@ -90,13 +90,17 @@ public class OCR extends Activity {
         File pictureFile = (File)extra.get("filePath");
 
 
-        setContentView(R.layout.ocr);
-        _field = (EditText) findViewById(R.id.field);
+//        setContentView(R.layout.ocr);
+//        _field = (EditText) findViewById(R.id.field);
+
 
 
         _path = pictureFile.toString();
         onPhotoTaken();
+
+
     }
+
 
 
 
@@ -134,9 +138,6 @@ public class OCR extends Activity {
         options.inSampleSize = 4;
 
         Bitmap bitmap = BitmapFactory.decodeFile(_path, options);
-//        bitmap = SetGrayscale(bitmap);
-//        bitmap = RemoveNoise(bitmap);
-
 
         // _image.setImageBitmap( bitmap );
 
@@ -161,21 +162,63 @@ public class OCR extends Activity {
             recognizedText = recognizedText.replaceAll("[^a-zA-Z0-9]+", " ");
         }
 
-        recognizedText = recognizedText.trim();
+        try {
+            recognizedText = recognizedText.trim();
+            Date date = findDate(recognizedText);
+            if ( recognizedText.length() != 0 ) {
+                _field.setText(_field.getText().toString().length() == 0 ? recognizedText : _field.getText() + " " + recognizedText);
+                _field.setSelection(_field.getText().toString().length());
+                Log.d(TAG, recognizedText);
+                Log.d("DATE FOUND", date.toString());
+                Intent calendar = new Intent(this,CreateEvent.class);
+                calendar.putExtra("Date", date);
 
-        if ( recognizedText.length() != 0 ) {
-            _field.setText(_field.getText().toString().length() == 0 ? recognizedText : _field.getText() + " " + recognizedText);
-            _field.setSelection(_field.getText().toString().length());
-            Log.d("TESSERACT",recognizedText);
+                calendar.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                startActivity(calendar);
+                finish();
+            }
+        } catch(NullPointerException e) {
+            Log.d(TAG,"Sorry, nothing was recognized!");
         }
 
+
+
         // Cycle done.
-//        Intent calendar = new Intent(this,CalendarActivity.cla)
+
+    }
+
+    public Date findDate(String output) {
+        try {
+            List<DateGroup> actualDates = new Parser().parse(output);
+            //remove first date in actualDates, for some reason it's always the time photo was taken
+            actualDates.remove(0);
+            // make new list with one date found in the document in it
+            List<Date> dates = new Parser().parse(output).get(0).getDates();
+
+            for (int s = 1; s < actualDates.size(); s++) {
+                dates.add(actualDates.get(s).getDates().get(0));
+            }
+
+
+            Log.d("OUTPUT GIVEN",output);
+
+            Log.d("DATES",dates.toString());
+            List<Date> dates2 = new Parser().parse(output).get(1).getDates();
+            for (int dat = 0; dat < dates2.size();dat++) {
+                Log.v("tEseseract", dates2.get(dat).toString());
+            }
+
+            return actualDates.get(0).getDates().get(0);
+
+        } catch (Exception e) {
+            Log.d(TAG,"No date Found!");
+        }
+        return null;
     }
 
     @Override
     public void onBackPressed() {
-        Intent i = new Intent(this,CalendarActivity.class);
+        Intent i = new Intent(this,MainActivity.class);
         startActivity(i);
         return;
     }

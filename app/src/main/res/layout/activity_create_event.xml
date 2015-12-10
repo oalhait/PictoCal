@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="320dp"
+    android:layout_height="520dp"
+    android:contextClickable="true"
+    android:elevation="10dp"
+    android:clickable="true"
+    android:layout_gravity="center|center"
+    android:focusable="true"
+    android:padding="5dp"
+    android:visibility="visible"
+    android:touchscreenBlocksFocus="false"
+    android:paddingTop="19dp"
+    android:theme="@android:style/Theme.Dialog"
+    android:background="#f5f5f5">
+    <!--android:background="@android:color/transparent">-->
+
+
+    <ImageView
+        android:layout_width="fill_parent"
+        android:layout_height="100dp"
+        android:background="@color/btn_bg"
+        android:clickable="false"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:id="@+id/imageView2" />
+
+
+    <Button
+        android:id="@+id/schedule_event"
+        android:layout_width="150dp"
+        android:layout_weight="1"
+        android:layout_height="35dp"
+        android:background="@color/btn_bg"
+        android:text="SCHEDULE"
+        android:textColor="@color/white"
+        android:layout_gravity="left|bottom"
+        android:onClick="onClick"
+        android:layout_alignParentBottom="true"
+        android:layout_alignEnd="@+id/imageView2"
+        android:layout_alignParentRight="true"
+        android:paddingLeft="1dp"
+        android:clickable="true" />
+
+    <ImageView
+        android:layout_width="120dp"
+        android:layout_height="60dp"
+        android:id="@+id/imageView"
+        android:src="@drawable/make_event"
+        android:layout_alignBottom="@+id/imageView2"
+        android:layout_alignParentStart="true" />
+
+    <Button
+        android:id="@+id/cancel_event"
+        android:layout_width="wrap_content"
+        android:layout_weight="1"
+        android:layout_height="35dp"
+        android:background="@color/btn_bg"
+        android:text="CANCEL"
+        android:textColor="@color/white"
+        android:layout_gravity="left|bottom"
+        android:onClick="onClick"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_toStartOf="@+id/schedule_event"
+        android:layout_alignParentRight="false"
+        android:layout_alignParentLeft="true"
+        android:singleLine="false"
+        android:layout_marginRight="1dp"
+        android:paddingRight="1dp"
+        android:clickable="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Date Found:"
+        android:id="@+id/textView"
+        android:layout_marginTop="15dp"
+        android:layout_below="@+id/imageView2"
+        android:layout_centerHorizontal="true"
+        android:typeface="sans"
+        android:visibility="visible"
+        android:textColor="@android:color/black" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="(change if needed)"
+        android:id="@+id/textView3"
+        android:contextClickable="false"
+        android:editable="false"
+        android:layout_alignStart="@+id/textView"
+        android:layout_below="@+id/textView"
+        android:paddingTop="5dp" />
+
+    <EditText
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/event_name"
+        android:layout_marginBottom="24dp"
+        android:layout_above="@+id/schedule_event"
+        android:layout_alignEnd="@+id/textView3" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Title"
+        android:id="@+id/textView2"
+        android:typeface="sans"
+        android:textColor="@android:color/black"
+        android:layout_above="@+id/event_name"
+        android:layout_alignEnd="@+id/imageView"
+        android:layout_alignParentEnd="false" />
+
+    <DatePicker
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/date_picker"
+        android:spinnersShown="true"
+        android:calendarViewShown="false"
+        android:theme="@android:style/Theme.Holo.Light.Dialog.NoActionBar"
+        android:layout_above="@+id/textView2"
+        android:layout_centerHorizontal="true"
+        android:paddingBottom="10dp" />
+
+    <NumberPicker
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:theme="@android:style/Theme.Holo.Light.Dialog.NoActionBar"
+        android:id="@+id/time"
+        android:layout_alignBottom="@+id/event_name"
+        android:gravity="center|center_vertical|center_horizontal"
+        android:layout_below="@+id/textView2"
+        android:layout_alignParentEnd="true"
+        android:layoutMode="opticalBounds"
+        android:measureWithLargestChild="false"
+        android:layout_marginRight="15dp"
+        android:layout_marginBottom="-8dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Time"
+        android:id="@+id/textView4"
+        android:typeface="sans"
+        android:textColor="@android:color/black"
+        android:layout_alignBottom="@+id/textView2"
+        android:layout_alignStart="@+id/time"
+        android:layout_alignEnd="@+id/time"
+        android:gravity="center" />
+
+
+</RelativeLayout>

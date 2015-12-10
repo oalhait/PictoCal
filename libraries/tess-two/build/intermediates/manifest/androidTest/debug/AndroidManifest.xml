@@ -3,7 +3,7 @@
     package="com.googlecode.tesseract.android.test" >
 
     <uses-sdk
-        android:minSdkVersion="8"
+        android:minSdkVersion="19"
         android:targetSdkVersion="22" />
 
     <instrumentation

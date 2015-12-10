@@ -1,4 +1,8 @@
 package io.oalhait.pictocal;
+import android.os.AsyncTask;
+import android.util.Log;
+import java.io.File;
+import java.io.FileNotFoundException;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -80,10 +84,11 @@ public class MainActivity extends Activity implements View.OnClickListener {
             {
                 try {
 
+
                     IMAGE_IN_USE.compress(Bitmap.CompressFormat.JPEG, 100, fos);
                     fos.flush();
                     fos.close();
-                    Intent in = new Intent(this, OCR.class);
+                    Intent in = new Intent(this, CreateEvent.class);
                     in.putExtra("filePath", pictureFile);
                     startActivity(in);
                 } catch (IOException e) {

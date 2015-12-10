@@ -16,12 +16,9 @@ android {
 
 
     defaultConfig {
-        minSdkVersion 8
+        minSdkVersion 19
         targetSdkVersion 22
 
-//        ndk {
-//            moduleName "tess-two"
-//        }
     }
 
 

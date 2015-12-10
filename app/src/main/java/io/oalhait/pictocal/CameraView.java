@@ -41,7 +41,7 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback{
             //when the surface is created, we can set the activity_main to draw images in this surfaceholder
                 mCamera.setPreviewDisplay(surfaceHolder);
                 mCamera.startPreview();
-            tryAutoFocus();
+            tryAutoFocus(mCamera);
         } catch (IOException e) {
             Log.d("ERROR", "Camera error on surfaceCreated " + e.getMessage());
 
@@ -91,7 +91,7 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback{
             }
             mCamera.setPreviewDisplay(mHolder);
             mCamera.startPreview();
-            tryAutoFocus();
+            tryAutoFocus(mCamera);
 
 
         } catch (IOException e) {
@@ -99,7 +99,7 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback{
         }
     }
 
-    private void tryAutoFocus(){
+    public static void tryAutoFocus(Camera mCamera){
         if(mCamera.getParameters().getFocusMode().compareTo("FOCUS_MODE_AUTO") == 0 ||
                 mCamera.getParameters().getFocusMode().compareTo("FOCUS_MODE_MACRO") == 0){
             mCamera.autoFocus(null);
