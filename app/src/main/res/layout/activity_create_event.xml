@@ -7,17 +7,16 @@
     android:clickable="true"
     android:layout_gravity="center|center"
     android:focusable="true"
-    android:padding="5dp"
     android:visibility="visible"
     android:touchscreenBlocksFocus="false"
-    android:paddingTop="19dp"
     android:theme="@android:style/Theme.Dialog"
+    android:orientation="vertical"
     android:background="#f5f5f5">
     <!--android:background="@android:color/transparent">-->
 
 
     <ImageView
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="100dp"
         android:background="@color/btn_bg"
         android:clickable="false"
@@ -35,12 +34,12 @@
         android:text="SCHEDULE"
         android:textColor="@color/white"
         android:layout_gravity="left|bottom"
-        android:onClick="onClick"
         android:layout_alignParentBottom="true"
         android:layout_alignEnd="@+id/imageView2"
         android:layout_alignParentRight="true"
         android:paddingLeft="1dp"
-        android:clickable="true" />
+        android:clickable="true"
+        android:onClick="onClick"/>
 
     <ImageView
         android:layout_width="120dp"
@@ -59,7 +58,6 @@
         android:text="CANCEL"
         android:textColor="@color/white"
         android:layout_gravity="left|bottom"
-        android:onClick="onClick"
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
         android:layout_toStartOf="@+id/schedule_event"
@@ -68,7 +66,8 @@
         android:singleLine="false"
         android:layout_marginRight="1dp"
         android:paddingRight="1dp"
-        android:clickable="true" />
+        android:clickable="true"
+        android:onClick="onClick"/>
 
     <TextView
         android:layout_width="wrap_content"

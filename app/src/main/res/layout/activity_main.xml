@@ -29,7 +29,8 @@
                     android:elevation="4dp"
                     android:padding="25dp"
                     android:cropToPadding="true"
-                    android:background="@drawable/circle">
+                    android:background="@drawable/circle"
+                    android:onClick="onClick">
 
                 </ImageButton>
             </FrameLayout>
@@ -95,8 +96,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_gravity="bottom"
-            android:orientation="horizontal"
-            tools:context=".ChooseActivity">
+            android:orientation="horizontal">
 
 
             <Button

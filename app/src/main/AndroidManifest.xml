@@ -16,9 +16,10 @@
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.MANAGE_ACCOUNTS" />
     <uses-permission android:name="android.permission.USE_CREDENTIALS" />
-
-    <android:uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <android:uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_CALENDAR" />
+    <uses-permission android:name="android.permission.WRITE_CALENDAR" />
 
     <application
         android:allowBackup="true"
@@ -36,15 +37,21 @@
         </activity>
         <activity
             android:name=".OCR"
-            android:label="@string/upload"></activity>
-        <activity android:name=".GetCalendarAPIActivity"></activity>
-        <activity android:name=".CreateEvent2"></activity>
+            android:label="@string/upload">
+
+        </activity>
+        <activity android:name=".GetCalendarAPIActivity">
+
+        </activity>
+        <activity android:name=".CreateEvent">
+
+        </activity>
 
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
 
-        <activity android:name=".CreateEvent"></activity>
+
     </application>
 
 </manifest>

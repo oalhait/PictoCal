@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 
 import com.googlecode.tesseract.android.TessBaseAPI;
@@ -90,10 +89,6 @@ public class OCR extends Activity {
         File pictureFile = (File)extra.get("filePath");
 
 
-//        setContentView(R.layout.ocr);
-//        _field = (EditText) findViewById(R.id.field);
-
-
 
         _path = pictureFile.toString();
         onPhotoTaken();
@@ -139,8 +134,6 @@ public class OCR extends Activity {
 
         Bitmap bitmap = BitmapFactory.decodeFile(_path, options);
 
-        // _image.setImageBitmap( bitmap );
-
         Log.v(TAG, "Before baseApi");
 
         TessBaseAPI baseApi = new TessBaseAPI();
@@ -152,10 +145,6 @@ public class OCR extends Activity {
 
         baseApi.end();
 
-        // You now have the text in recognizedText int, you can do anything with it.
-        // We will display a stripped out trimmed alpha-numeric version of it (if lang is eng)
-        // so that garbage doesn't make it to the display.
-
         Log.v(TAG, "OCRED TEXT: " + recognizedText);
 
         if ( lang.equalsIgnoreCase("eng") ) {
@@ -166,18 +155,18 @@ public class OCR extends Activity {
             recognizedText = recognizedText.trim();
             Date date = findDate(recognizedText);
             if ( recognizedText.length() != 0 ) {
-                _field.setText(_field.getText().toString().length() == 0 ? recognizedText : _field.getText() + " " + recognizedText);
-                _field.setSelection(_field.getText().toString().length());
-                Log.d(TAG, recognizedText);
-                Log.d("DATE FOUND", date.toString());
-                Intent calendar = new Intent(this,CreateEvent.class);
-                calendar.putExtra("Date", date);
 
+                Log.d("DATE FOUND", date.toString());
+                Intent calendar = new Intent(this,MainActivity.class);
+                calendar.putExtra("Date", date);
+                calendar.putExtra("caller","OCR");
+                calendar.putExtra("executed",true);
                 calendar.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_ANIMATION);
                 startActivity(calendar);
                 finish();
             }
         } catch(NullPointerException e) {
+            Log.d("ERROR",e.getMessage());
             Log.d(TAG,"Sorry, nothing was recognized!");
         }
 
@@ -195,23 +184,23 @@ public class OCR extends Activity {
             // make new list with one date found in the document in it
             List<Date> dates = new Parser().parse(output).get(0).getDates();
 
-            for (int s = 1; s < actualDates.size(); s++) {
-                dates.add(actualDates.get(s).getDates().get(0));
-            }
-
 
             Log.d("OUTPUT GIVEN",output);
 
-            Log.d("DATES",dates.toString());
-            List<Date> dates2 = new Parser().parse(output).get(1).getDates();
-            for (int dat = 0; dat < dates2.size();dat++) {
-                Log.v("tEseseract", dates2.get(dat).toString());
-            }
 
-            return actualDates.get(0).getDates().get(0);
+            Log.d("DATES",dates.toString());
+            for (int dat = 0; dat < dates.size();dat++) {
+                Log.v("tEseseract", dates.get(dat).toString());
+            }
+            Log.v(TAG,dates.get(0).toString());
+            return dates.get(0);
+
+
+//            return actualDates.get(0).getDates().get(0);
 
         } catch (Exception e) {
             Log.d(TAG,"No date Found!");
+            Log.d(TAG,e.getMessage());
         }
         return null;
     }

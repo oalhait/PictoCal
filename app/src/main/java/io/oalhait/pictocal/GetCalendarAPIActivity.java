@@ -14,12 +14,12 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.util.ExponentialBackOff;
-
 import com.google.api.services.calendar.CalendarScopes;
 import com.google.api.client.util.DateTime;
 
 import com.google.api.services.calendar.model.*;
 
+import android.Manifest;
 import android.accounts.AccountManager;
 import android.app.Activity;
 import android.app.Dialog;
@@ -32,11 +32,14 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.CalendarContract;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.text.method.ScrollingMovementMethod;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import java.util.Calendar;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -103,6 +106,7 @@ public class GetCalendarAPIActivity extends Activity {
 
     public static void done(Context mContext) {
         Intent i = new Intent(mContext,MainActivity.class);
+        i.putExtra("caller", GetCalendarAPIActivity.class);
         mContext.startActivity(i);
     }
 
@@ -320,8 +324,12 @@ public class GetCalendarAPIActivity extends Activity {
                 output.add(0, "Data retrieved using the Google Calendar API:");
                 mOutputText.setText(TextUtils.join("\n", output));
             }
-            // mContext is guaranteed to not be null, it's assigned in onCreate method
+            Intent ix = new Intent(mContext, MainActivity.class);
+//            Bundle extra = getIntent().getExtras();
+//            ix.putExtras(extra);
+            ix.putExtra("approved",true);
             GetCalendarAPIActivity.done(mContext);
+            startActivity(ix);
         }
 
 
@@ -348,63 +356,6 @@ public class GetCalendarAPIActivity extends Activity {
             }
         }
 
-        private void scheduleEvent(Context context) {
-            Intent eventInfo = getIntent();
-            Bundle extra = eventInfo.getExtras();
-            String nextTime = "";
-            String year = (String)extra.get("Year");
-            if(Integer.parseInt(year) < 10) {
-                year = "0" + year;
-            }
-            String month = (String)extra.get("Month");
-            if(Integer.parseInt(month) < 10) {
-                month = "0" + month;
-            }
-            String day = (String)extra.get("Day");
-            String time = (String)extra.get("Time");
-            if(Integer.parseInt(time) < 10) {
-                time = "0" + time;
-                if(Integer.parseInt(time) + 1 == 10) {
-                    nextTime = "10";
-                }
-                else {
-                    nextTime = "0" + String.valueOf(Integer.parseInt(time)+1);
-                }
-            }
-            //duration of event hardcoded for now
-            //duration of event (in hours)
-            int duration = 1;
-            String title = (String)extra.get("Title");
 
-            Event event = new Event()
-                    .setSummary(title);
-
-            //timezone hardcoded for eastern time
-            int intYear = (int)extra.get("Year");
-            int intMonth = (int)extra.get("Month");
-            int intDay = (int)extra.get("Day");
-            DateTime startdt = new DateTime(year  + "-" + month  + "-" + day + "T" + time + ":00:00-05:00");
-            DateTime enddt = new DateTime(year  + "-" + month  + "-" + day + "T" + nextTime + ":00:00-05:00");
-            event.setStart(new EventDateTime().setDateTime(startdt));
-            event.setEnd(new EventDateTime().setDateTime(enddt));
-
-            EventReminder[] reminderOverrides = new EventReminder[] {
-                    new EventReminder().setMethod("email").setMinutes(24 * 60),
-                    new EventReminder().setMethod("popup").setMinutes(10),
-            };
-            Event.Reminders reminders = new Event.Reminders()
-                    .setUseDefault(false)
-                    .setOverrides(Arrays.asList(reminderOverrides));
-            event.setReminders(reminders);
-
-            String calendarId = "primary";
-            ContentResolver cr = context.getContentResolver();
-            try {
-                event = mService.events().insert(calendarId, event).execute();
-                System.out.printf("Event created: %s\n", event.getHtmlLink());
-            } catch(IOException e) {
-                System.out.println("Event failed to be created.");
-            }
-        }
     }
 }
