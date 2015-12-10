@@ -1,0 +1,7 @@
+Project Proposal
+I wanted to solve a problem that I faced often. I put ideas that come to me in a notebook, and this app was one of the ones I wanted to get done the most, especially with the multitude of flyers one faces in college. I wanted to make it easy to schedule an event on the go, and I’m happy with what it is given the amount of time I dedicated to it (and to learning Android, Tesseract, etc.)
+
+Speaking of which, I used a lot of libraries for different things. I used Android primarily to house my application, and I utilized Tesseract-OCR and the Google Calendar API in it; I’d call those my primary sources. 
+
+Code Artifacts (apologies for not committing enough)
+https://github.com/oalhait/PictoCal

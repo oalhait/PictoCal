@@ -34,3 +34,18 @@ Wednesday 12/2:
 Almost finished with making the UI incorporation to support the uploading function.
 3 hours
 
+Thursday 12/3:
+Got basic UI down,it looks bad but has a flow that isn’t painful to look at.
+2 hours
+
+Monday 12/7:
+Building makeEvent method
+3 hours
+
+Tuesday 12/8:
+makeEvent done, but app has a bug so I can’t test yet
+got bug fixed by the end and built a lot of the integration stuff
+3 hours
+
+Wednesday 12/9 / Thursday 12/10:
+woohoo last day. Not gonna lie, I spent around 15 hours working on it to finish it up (got it done by 7 am). Although I’m not nearly happy with the looks/animations/overall UI of the app, it does what I wanted it to, and I think it’s really cool.
